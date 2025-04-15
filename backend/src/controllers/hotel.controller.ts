@@ -81,7 +81,7 @@ export const getAllHotels: RequestHandler = async (req, res) => {
 };
 
 // ------------------------------
-// Buscar hotel por ID
+// Procurar hotel por ID
 // ------------------------------
 export const getHotelById: RequestHandler = async (req, res) => {
   try {
