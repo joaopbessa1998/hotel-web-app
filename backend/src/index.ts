@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/auth.routes';
 import hotelRoutes from './routes/hotel.routes';
 import bookingRoutes from './routes/booking.routes';
+import paymentRoutes from './routes/payment.routes';
 
 dotenv.config(); // lê variáveis de ambiente do ficheiro .env
 
@@ -33,6 +34,7 @@ app.get('/ping', (req: Request, res: Response) => {
 app.use('/auth', authRoutes);
 app.use('/hotels', hotelRoutes);
 app.use('/bookings', bookingRoutes);
+app.use('/payments', paymentRoutes);
 
 // iniciar servidor
 const PORT = process.env.PORT || 3000;
