@@ -1,7 +1,10 @@
 import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+
+import Navbar from './components/Layout/Navbar';
+
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { HotelsList } from './pages/HotelsList';
@@ -11,37 +14,41 @@ import { GuestArea } from './pages/GuestArea';
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+    <BrowserRouter>
+      <AuthProvider>
+        <Navbar />
 
-            <Route path="/" element={<HotelsList />} />
-            <Route path="/hotels/:id" element={<HotelDetail />} />
+        <Routes>
+          {/* públicas */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<HotelsList />} />
+          <Route path="/hotels/:id" element={<HotelDetail />} />
 
-            <Route
-              path="/guest"
-              element={
-                <PrivateRoute roles={['hospede']}>
-                  <GuestArea />
-                </PrivateRoute>
-              }
-            />
+          {/* protegidas */}
+          <Route
+            path="/guest"
+            element={
+              <PrivateRoute roles={['hospede']}>
+                <GuestArea />
+              </PrivateRoute>
+            }
+          />
 
-            <Route
-              path="/hotel"
-              element={
-                <PrivateRoute roles={['hotel']}>
-                  <HotelArea />
-                </PrivateRoute>
-              }
-            />
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </>
+          <Route
+            path="/hotel"
+            element={
+              <PrivateRoute roles={['hotel']}>
+                <HotelArea />
+              </PrivateRoute>
+            }
+          />
+
+          {/* fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
