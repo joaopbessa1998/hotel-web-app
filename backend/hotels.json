@@ -1,0 +1,323 @@
+[
+  {
+    "name": "Sol e Mar Resort",
+    "stars": 5,
+    "address": {
+      "street": "Avenida da Liberdade",
+      "number": "245",
+      "postalCode": "1250-096",
+      "city": "Lisboa",
+      "country": "Portugal"
+    },
+    "description": "Luxuoso resort junto à praia com spa, piscina exterior e vistas panorâmicas sobre o Atlântico.",
+    "facilities": [
+      "Wi-Fi grátis",
+      "Piscina exterior",
+      "Spa",
+      "Ginásio",
+      "Restaurante",
+      "Bar"
+    ],
+    "email": "hotel1@example.com"
+  },
+  {
+    "name": "Hotel Encanto da Serra",
+    "stars": 4,
+    "address": {
+      "street": "Rua das Fragas",
+      "number": "102",
+      "postalCode": "2710-634",
+      "city": "Sintra",
+      "country": "Portugal"
+    },
+    "description": "Refúgio de montanha rodeado de pinhais, ideal para caminhadas e descanso.",
+    "facilities": [
+      "Wi-Fi grátis",
+      "Pequeno-almoço incluído",
+      "Estacionamento grátis",
+      "Sala de leitura"
+    ],
+    "email": "hotel2@example.com"
+  },
+  {
+    "name": "City Inn Lisboa",
+    "stars": 3,
+    "address": {
+      "street": "Rua de São Julião",
+      "number": "31",
+      "postalCode": "1100-444",
+      "city": "Lisboa",
+      "country": "Portugal"
+    },
+    "description": "Alojamento económico no centro histórico, a cinco minutos da Baixa Pombalina.",
+    "facilities": ["Wi-Fi grátis", "Receção 24h", "Bar", "Ar condicionado"],
+    "email": "hotel3@example.com"
+  },
+  {
+    "name": "Porto Riverside Hotel",
+    "stars": 4,
+    "address": {
+      "street": "Cais da Ribeira",
+      "number": "76",
+      "postalCode": "4050-513",
+      "city": "Porto",
+      "country": "Portugal"
+    },
+    "description": "Charme ribeirinho com quartos modernos virados para o Douro.",
+    "facilities": [
+      "Wi-Fi grátis",
+      "Bar com vista",
+      "Pequeno-almoço buffet",
+      "Serviço de quartos"
+    ],
+    "email": "hotel4@example.com"
+  },
+  {
+    "name": "Monte Verde Retreat",
+    "stars": 5,
+    "address": {
+      "street": "Estrada Nacional 210",
+      "number": "58",
+      "postalCode": "9500-505",
+      "city": "Funchal",
+      "country": "Portugal"
+    },
+    "description": "Boutique hotel com jardim tropical e piscina infinita.",
+    "facilities": [
+      "Wi-Fi grátis",
+      "Piscina infinita",
+      "Spa",
+      "Transfer aeroporto"
+    ],
+    "email": "hotel5@example.com"
+  },
+  {
+    "name": "Praia Azul Hotel",
+    "stars": 3,
+    "address": {
+      "street": "Rua do Farol",
+      "number": "14",
+      "postalCode": "8500-501",
+      "city": "Lagos",
+      "country": "Portugal"
+    },
+    "description": "Frente-mar com acesso direto à praia e decoração minimalista.",
+    "facilities": ["Wi-Fi grátis", "Ar condicionado", "Estacionamento pago"],
+    "email": "hotel6@example.com"
+  },
+  {
+    "name": "Palácio Real Hotel",
+    "stars": 5,
+    "address": {
+      "street": "Praceta dos Reis",
+      "number": "1",
+      "postalCode": "4470-123",
+      "city": "Porto",
+      "country": "Portugal"
+    },
+    "description": "Antigo palácio do século XVIII convertido em hotel de luxo.",
+    "facilities": [
+      "Wi-Fi grátis",
+      "Spa",
+      "Restaurante gourmet",
+      "Sala de eventos"
+    ],
+    "email": "hotel7@example.com"
+  },
+  {
+    "name": "Jardim Botânico Lodge",
+    "stars": 4,
+    "address": {
+      "street": "Rua do Botânico",
+      "number": "64",
+      "postalCode": "3000-456",
+      "city": "Coimbra",
+      "country": "Portugal"
+    },
+    "description": "Pousada tranquila junto ao famoso Jardim Botânico da universidade.",
+    "facilities": ["Wi-Fi grátis", "Pequeno-almoço buffet", "Jardim privado"],
+    "email": "hotel8@example.com"
+  },
+  {
+    "name": "Vale dos Vinhedos Resort",
+    "stars": 4,
+    "address": {
+      "street": "Estrada das Vinhas",
+      "number": "210",
+      "postalCode": "3500-100",
+      "city": "Reguengos de Monsaraz",
+      "country": "Portugal"
+    },
+    "description": "Resort rural rodeado de vinhas com provas de vinho no local.",
+    "facilities": [
+      "Wi-Fi grátis",
+      "Provas de vinho",
+      "Piscina exterior",
+      "Restaurante"
+    ],
+    "email": "hotel9@example.com"
+  },
+  {
+    "name": "Costa Dorada Suites",
+    "stars": 3,
+    "address": {
+      "street": "Avenida do Atlântico",
+      "number": "89",
+      "postalCode": "8100-123",
+      "city": "Portimão",
+      "country": "Portugal"
+    },
+    "description": "Apart-hotéis com kitchenette a poucos metros da praia.",
+    "facilities": ["Wi-Fi grátis", "Kitchenette", "Estacionamento grátis"],
+    "email": "hotel10@example.com"
+  },
+  {
+    "name": "Vila Histórica Hotel",
+    "stars": 4,
+    "address": {
+      "street": "Largo do Castelo",
+      "number": "3",
+      "postalCode": "9500-300",
+      "city": "Angra do Heroísmo",
+      "country": "Portugal"
+    },
+    "description": "Hotel em casa senhorial no centro histórico da ilha Terceira.",
+    "facilities": [
+      "Wi-Fi grátis",
+      "Transfer gratuito",
+      "Pequeno-almoço incluído"
+    ],
+    "email": "hotel11@example.com"
+  },
+  {
+    "name": "Refúgio Tranquilo Guesthouse",
+    "stars": 2,
+    "address": {
+      "street": "Rua das Palmeiras",
+      "number": "22",
+      "postalCode": "9700-456",
+      "city": "Ponta Delgada",
+      "country": "Portugal"
+    },
+    "description": "Guesthouse económica perto do centro, ideal para viajantes independentes.",
+    "facilities": ["Wi-Fi grátis", "Cozinha partilhada"],
+    "email": "hotel12@example.com"
+  },
+  {
+    "name": "Lisbon Corner Hotel",
+    "stars": 3,
+    "address": {
+      "street": "Praça Luís de Camões",
+      "number": "12",
+      "postalCode": "1200-243",
+      "city": "Lisboa",
+      "country": "Portugal"
+    },
+    "description": "Design moderno e pequeno-almoço saudável incluído.",
+    "facilities": ["Wi-Fi grátis", "Pequeno-almoço incluído", "Bar"],
+    "email": "hotel13@example.com"
+  },
+  {
+    "name": "Ocean View B&B",
+    "stars": 4,
+    "address": {
+      "street": "Caminho do Farol",
+      "number": "5",
+      "postalCode": "9000-123",
+      "city": "Faro",
+      "country": "Portugal"
+    },
+    "description": "Bed & Breakfast com vista direta para o mar e terraço panorâmico.",
+    "facilities": ["Wi-Fi grátis", "Terraço com vista", "Pequeno-almoço"],
+    "email": "hotel14@example.com"
+  },
+  {
+    "name": "Santo António Palace",
+    "stars": 5,
+    "address": {
+      "street": "Rua de Santo António",
+      "number": "45",
+      "postalCode": "4100-016",
+      "city": "Porto",
+      "country": "Portugal"
+    },
+    "description": "Palácio adaptado com decoração clássica e serviço de mordomo.",
+    "facilities": [
+      "Wi-Fi grátis",
+      "Serviço de mordomo",
+      "Spa",
+      "Piscina interior"
+    ],
+    "email": "hotel15@example.com"
+  },
+  {
+    "name": "Ria Formosa Eco Resort",
+    "stars": 4,
+    "address": {
+      "street": "Rua da Ria",
+      "number": "78",
+      "postalCode": "8800-116",
+      "city": "Olhão",
+      "country": "Portugal"
+    },
+    "description": "Resort sustentável junto à Ria Formosa, com atividades ecológicas.",
+    "facilities": ["Wi-Fi grátis", "Tours ecológicos", "Piscina exterior"],
+    "email": "hotel16@example.com"
+  },
+  {
+    "name": "Sintra Palace Hotel",
+    "stars": 5,
+    "address": {
+      "street": "Avenida Dr. Miguel Bombarda",
+      "number": "99",
+      "postalCode": "2710-590",
+      "city": "Sintra",
+      "country": "Portugal"
+    },
+    "description": "Grandioso edifício neoclássico a dois passos do Palácio Nacional de Sintra.",
+    "facilities": ["Wi-Fi grátis", "Jardins privados", "Sala de chá", "Bar"],
+    "email": "hotel17@example.com"
+  },
+  {
+    "name": "Douro Valley Inn",
+    "stars": 4,
+    "address": {
+      "street": "Quinta do Vale",
+      "number": "12",
+      "postalCode": "5100-424",
+      "city": "Peso da Régua",
+      "country": "Portugal"
+    },
+    "description": "Pousada rústica com vista sobre as vinhas do Douro.",
+    "facilities": ["Wi-Fi grátis", "Provas de vinho", "Terraço panorâmico"],
+    "email": "hotel18@example.com"
+  },
+  {
+    "name": "Algarve Breeze Hotel",
+    "stars": 3,
+    "address": {
+      "street": "Rua das Ondas",
+      "number": "33",
+      "postalCode": "8400-360",
+      "city": "Albufeira",
+      "country": "Portugal"
+    },
+    "description": "Hotel colorido e descontraído a 200m da praia dos Pescadores.",
+    "facilities": ["Wi-Fi grátis", "Piscina exterior", "Bar junto à piscina"],
+    "email": "hotel19@example.com"
+  },
+  {
+    "name": "Cascais Bay Hotel",
+    "stars": 4,
+    "address": {
+      "street": "Avenida Dom Carlos I",
+      "number": "101",
+      "postalCode": "2750-310",
+      "city": "Cascais",
+      "country": "Portugal"
+    },
+    "description": "Design contemporâneo com vista para a baía e marina.",
+    "facilities": ["Wi-Fi grátis", "Ginásio", "Pequeno-almoço buffet"],
+    "email": "hotel20@example.com"
+  }
+]

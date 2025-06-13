@@ -1,0 +1,12 @@
+{
+  "id": "evt_test_invoice",
+  "object": "event",
+  "type": "checkout.session.completed",
+  "data": {
+    "object": {
+      "id": "cs_test_123",
+      "object": "checkout.session",
+      "metadata": { "bookingId": "<bookingId>" }
+    }
+  }
+}
