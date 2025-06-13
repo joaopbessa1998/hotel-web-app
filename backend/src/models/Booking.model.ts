@@ -7,6 +7,7 @@ export interface IBooking extends Document {
   checkOut: Date;
   adults: number;
   children: number;
+  roomType: string;
   status: string; // ex.: "pending", "confirmed", "cancelled", ...
   totalPrice: number; // para preencher após cálculo ou pagamento
   createdAt: Date;
@@ -27,9 +28,14 @@ const BookingSchema = new Schema<IBooking>(
     },
     checkIn: { type: Date, required: true },
     checkOut: { type: Date, required: true },
+    roomType: { type: String, required: true },
     adults: { type: Number, required: true, default: 1 },
     children: { type: Number, required: true, default: 0 },
-    status: { type: String, default: 'pending' },
+    status: {
+      type: String,
+      enum: ['pending', 'paid', 'cancelled'],
+      default: 'pending',
+    },
     totalPrice: { type: Number, default: 0 },
   },
   { timestamps: true },
