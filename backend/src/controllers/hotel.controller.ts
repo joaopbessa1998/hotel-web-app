@@ -1,15 +1,13 @@
+// src/controllers/hotel.controller.ts
+
 import { RequestHandler } from 'express';
 import Hotel from '../models/Hotel.model';
+import User from '../models/User.model';
 
-// ------------------------------
-// Cria hotel
-// ------------------------------
+// ─── Criar hotel ───────────────────────────────────────────────
 export const createHotel: RequestHandler = async (req, res) => {
   try {
-    // O id do user (role: hotel) vem do middleware checkAuth
     const userId = (req as any).userId;
-
-    // Exemplo de destructuring do body
     const {
       name,
       description,
@@ -22,7 +20,12 @@ export const createHotel: RequestHandler = async (req, res) => {
       photos,
     } = req.body;
 
-    // Criar o hotel associando o dono (owner) a userId
+    const exists = await Hotel.findOne({ owner: userId });
+    if (exists) {
+      res.status(400).json({ message: 'Já tens um hotel registado.' });
+      return;
+    }
+
     const newHotel = await Hotel.create({
       name,
       description,
@@ -35,6 +38,7 @@ export const createHotel: RequestHandler = async (req, res) => {
       photos,
       owner: userId,
     });
+    await User.findByIdAndUpdate(userId, { role: 'hotel' });
 
     res
       .status(201)
@@ -45,54 +49,96 @@ export const createHotel: RequestHandler = async (req, res) => {
   }
 };
 
-// ------------------------------
-// Listar todos os hotéis
-// (aceita filtros no query string? city, stars, etc.)
-// ------------------------------
+// ─── Listar todos os hotéis ─────────────────────────────────────
 export const getAllHotels: RequestHandler = async (req, res) => {
   try {
-    // Se quiseres filtrar por query:
-    // ex: /hotels?city=Porto&stars=5
-    const { city, stars, name } = req.query;
+    const q = req.query as Record<string, string | undefined>;
+    const {
+      city,
+      stars,
+      name,
+      wifi,
+      pool,
+      parking,
+      petFriendly,
+      evCharger,
+      roomService,
+      airConditioning,
+      fitnessCenter,
+      spa,
+      onSiteRestaurant,
+      bar,
+      laundry,
+      kitchenette,
+      balcony,
+      oceanView,
+      breakfastIncluded,
+      freeCancellation,
+      privateBathroom,
+      businessCenter,
+      meetingRooms,
+      wheelchairAccess,
+      reception24h,
+      elevator,
+    } = q;
 
-    // Montar um "filtro" para .find()
-    const filter: any = {};
+    const filter: Record<string, any> = {};
+    if (city) filter['address.city'] = city;
+    if (stars) filter.stars = Number(stars);
+    if (name) filter.name = { $regex: name, $options: 'i' };
 
-    if (city) {
-      filter['address.city'] = city; // city é text, ex: "Porto"
-    }
+    const facilityFlags: [string, string | undefined][] = [
+      ['wifi', wifi],
+      ['pool', pool],
+      ['parking', parking],
+      ['petFriendly', petFriendly],
+      ['evCharger', evCharger],
+      ['roomService', roomService],
+      ['airConditioning', airConditioning],
+      ['fitnessCenter', fitnessCenter],
+      ['spa', spa],
+      ['onSiteRestaurant', onSiteRestaurant],
+      ['bar', bar],
+      ['laundry', laundry],
+      ['kitchenette', kitchenette],
+      ['balcony', balcony],
+      ['oceanView', oceanView],
+    ];
+    const allFacilities = facilityFlags
+      .filter(([, v]) => v === 'true')
+      .map(([k]) => k);
+    if (allFacilities.length) filter.facilities = { $all: allFacilities };
 
-    if (stars) {
-      // stars é string, converter para número
-      filter.stars = Number(stars);
-    }
-
-    if (name) {
-      // buscar por substring no name
-      filter.name = { $regex: name, $options: 'i' };
-    }
+    const boolFlags: [string, string | undefined][] = [
+      ['breakfastIncluded', breakfastIncluded],
+      ['freeCancellation', freeCancellation],
+      ['privateBathroom', privateBathroom],
+      ['businessCenter', businessCenter],
+      ['meetingRooms', meetingRooms],
+      ['wheelchairAccess', wheelchairAccess],
+      ['reception24h', reception24h],
+      ['elevator', elevator],
+    ];
+    boolFlags.forEach(([k, v]) => {
+      if (v === 'true') filter[k] = true;
+    });
 
     const hotels = await Hotel.find(filter);
     res.json(hotels);
-  } catch (error) {
-    console.error('Erro ao listar hotéis:', error);
+  } catch (err) {
+    console.error('Erro ao listar hotéis:', err);
     res.status(500).json({ message: 'Erro interno do servidor' });
   }
 };
 
-// ------------------------------
-// Procurar hotel por ID
-// ------------------------------
+// ─── Obter hotel por ID ─────────────────────────────────────────
 export const getHotelById: RequestHandler = async (req, res) => {
   try {
-    const { id } = req.params;
-    const hotel = await Hotel.findById(id);
-
+    const hotel = await Hotel.findById(req.params.id);
     if (!hotel) {
       res.status(404).json({ message: 'Hotel não encontrado' });
       return;
     }
-
     res.json(hotel);
   } catch (error) {
     console.error('Erro ao buscar hotel:', error);
@@ -100,54 +146,24 @@ export const getHotelById: RequestHandler = async (req, res) => {
   }
 };
 
-// ------------------------------
-// Atualizar hotel
-// ------------------------------
-export const updateHotel: RequestHandler = async (req, res) => {
+// ─── Atualizar hotel por ID ─────────────────────────────────────
+export const updateHotelById: RequestHandler = async (req, res) => {
   try {
     const userId = (req as any).userId;
-    const { id } = req.params;
-
-    // Verificar se este hotel pertence ao userId
-    const hotel = await Hotel.findById(id);
+    const hotel = await Hotel.findById(req.params.id);
     if (!hotel) {
       res.status(404).json({ message: 'Hotel não encontrado' });
       return;
     }
-    // se o userId não é dono (owner) do hotel, bloqueia
     if (hotel.owner.toString() !== userId) {
       res.status(403).json({ message: 'Acesso negado. Este hotel não é seu.' });
+      return;
     }
-
-    // Atualizar com base no body
-    const {
-      name,
-      description,
-      stars,
-      address,
-      contact,
-      rooms,
-      totalRooms,
-      facilities,
-      photos,
-    } = req.body;
-
     const updatedHotel = await Hotel.findByIdAndUpdate(
-      id,
-      {
-        name,
-        description,
-        stars,
-        address,
-        contact,
-        rooms,
-        totalRooms,
-        facilities,
-        photos,
-      },
-      { new: true },
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true },
     );
-
     res.json({ message: 'Hotel atualizado', hotel: updatedHotel });
   } catch (error) {
     console.error('Erro ao atualizar hotel:', error);
@@ -155,29 +171,100 @@ export const updateHotel: RequestHandler = async (req, res) => {
   }
 };
 
-// ------------------------------
-// Apagar hotel
-// ------------------------------
-export const deleteHotel: RequestHandler = async (req, res) => {
+// ─── Apagar hotel por ID ────────────────────────────────────────
+export const deleteHotelById: RequestHandler = async (req, res) => {
   try {
     const userId = (req as any).userId;
-    const { id } = req.params;
-
-    const hotel = await Hotel.findById(id);
+    const hotel = await Hotel.findById(req.params.id);
     if (!hotel) {
       res.status(404).json({ message: 'Hotel não encontrado' });
       return;
     }
-    // verificar se é o dono
     if (hotel.owner.toString() !== userId) {
       res.status(403).json({ message: 'Acesso negado. Este hotel não é seu.' });
+      return;
     }
-
-    await hotel.deleteOne(); // ou Hotel.findByIdAndDelete(id);
-
+    await hotel.deleteOne();
     res.json({ message: 'Hotel removido com sucesso' });
   } catch (error) {
     console.error('Erro ao remover hotel:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+};
+
+// ─── Operações “Meu Hotel” ─────────────────────────────────────
+export const getMyHotel: RequestHandler = async (req, res) => {
+  try {
+    const hotel = await Hotel.findOne({ owner: (req as any).userId });
+    if (!hotel) {
+      res.status(404).json({ message: 'Nenhum hotel registado' });
+      return;
+    }
+    res.json(hotel);
+  } catch (error) {
+    console.error('Erro ao buscar meu hotel:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+};
+
+export const updateMyHotel: RequestHandler = async (req, res) => {
+  try {
+    const hotel = await Hotel.findOneAndUpdate(
+      { owner: (req as any).userId },
+      req.body,
+      { new: true, runValidators: true },
+    );
+    if (!hotel) {
+      res.status(404).json({ message: 'Nenhum hotel registado' });
+      return;
+    }
+    res.json(hotel);
+  } catch (error) {
+    console.error('Erro ao atualizar meu hotel:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+};
+
+export const updateMyFacilities: RequestHandler = async (req, res) => {
+  try {
+    const { facilities, ...flags } = req.body;
+    const update: any = { ...(facilities && { facilities }), ...flags };
+    const hotel = await Hotel.findOneAndUpdate(
+      { owner: (req as any).userId },
+      update,
+      { new: true, runValidators: true },
+    );
+    if (!hotel) {
+      res.status(404).json({ message: 'Nenhum hotel registado' });
+      return;
+    }
+    res.json(hotel);
+  } catch (error) {
+    console.error('Erro ao atualizar facilidades:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+};
+
+export const deleteMyPhoto: RequestHandler = async (req, res) => {
+  try {
+    const hotel = await Hotel.findOneAndUpdate(
+      { owner: (req as any).userId },
+      {
+        $pull: {
+          photos: {
+            $regex: req.params.filename.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+          },
+        },
+      },
+      { new: true },
+    );
+    if (!hotel) {
+      res.status(404).json({ message: 'Nenhum hotel registado' });
+      return;
+    }
+    res.json(hotel);
+  } catch (error) {
+    console.error('Erro ao remover foto:', error);
     res.status(500).json({ message: 'Erro interno do servidor' });
   }
 };

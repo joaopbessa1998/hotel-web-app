@@ -7,7 +7,7 @@ export interface IHotel extends Document {
   address: {
     street: string;
     number: string;
-    postalcode: string;
+    postalCode: string;
     city: string;
     country: string;
   };
@@ -15,11 +15,15 @@ export interface IHotel extends Document {
     phone: string;
     email: string;
   };
-  rooms: {};
-  totalRooms: number;
+  // substituído rooms/totalRooms por roomTypes
+  roomTypes: {
+    type: string;
+    quantity: number;
+    nightlyRate: number;
+  }[];
   facilities: string[];
   photos: string[];
-  owner: mongoose.Types.ObjectId; // associar hotel ao user role: hotel
+  owner: mongoose.Types.ObjectId;
 }
 
 const AddressSchema = new Schema({
@@ -35,9 +39,10 @@ const ContactSchema = new Schema({
   email: { type: String, required: true },
 });
 
-const RoomSchema = new Schema({
-  type: { type: String, required: true },
-  quantity: { type: Number, required: true },
+const RoomTypeSchema = new Schema({
+  type: { type: String, required: true }, // ex.: "Double"
+  quantity: { type: Number, required: true, min: 1 },
+  nightlyRate: { type: Number, required: true, min: 0 }, // € por noite
 });
 
 const HotelSchema = new Schema(
@@ -47,14 +52,11 @@ const HotelSchema = new Schema(
     stars: { type: Number, required: true, min: 1, max: 5 },
     address: { type: AddressSchema, required: true },
     contact: { type: ContactSchema, required: true },
-    //rooms: { type: RoomSchema, default: [] },
-    rooms: { type: [RoomSchema], default: [] },
-    totalRooms: { type: Number, default: 0 },
+    roomTypes: { type: [RoomTypeSchema], default: [] },
     facilities: { type: [String], default: [] },
     photos: { type: [String], default: [] },
-    // owner é o userId do hotel que possui o registo
     owner: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
