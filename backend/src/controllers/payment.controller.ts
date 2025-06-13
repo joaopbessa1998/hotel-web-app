@@ -1,54 +1,100 @@
-// payment.controller.ts
 import { RequestHandler } from 'express';
 import Stripe from 'stripe';
-import Booking from '../models/Booking.model'; // filtrar por booking
-import dotenv from 'dotenv';
+import Booking from '../models/Booking.model';
+import Hotel from '../models/Hotel.model';
+import Invoice from '../models/Invoice.model';
+import { generateInvoicePdf } from '../utils/invoicePdf';
+import 'dotenv/config';
 
-dotenv.config(); // acesso às variáveis de ambiente
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!); // usa default apiVersion
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-03-31.basil',
-});
-
-// cria um payment intent e devolve o client secret ao front
-export const createPaymentIntent: RequestHandler = async (req, res) => {
+/* ───────── POST /payments/checkout ───────── */
+export const createCheckout: RequestHandler = async (req, res) => {
+  console.log('createCheckout headers:', req.headers);
+  console.log('createCheckout body:', req.body);
   try {
+    console.log('createCheckout body:', req.body);
     const { bookingId } = req.body;
 
-    // O userId vem do checkAuth
-    const userId = (req as any).userId;
+    const booking = await Booking.findById(bookingId).lean();
+    console.log('found booking:', booking);
 
-    if (!bookingId) {
-      res.status(400).json({ message: 'Falta o bookingId' });
+    if (!booking || booking.status !== 'pending') {
+      console.warn('Booking inválida ou não pendente:', booking);
+      res.status(400).json({ message: 'Reserva inválida' });
       return;
     }
 
-    const booking = await Booking.findById(bookingId);
-    if (!booking) {
-      res.status(404).json({ message: 'Booking não encontrado' });
-      return;
-    }
+    // popula somente o nome do hotel
+    const hotel = await Hotel.findById(booking.hotelId, { name: 1 }).lean();
 
-    // determinar montante a cobrar (em cêntimos)
-    const amountInCents = (booking.totalPrice || 0) * 100;
-
-    // criar PaymentIntent
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amountInCents,
-      currency: 'eur', // ou 'usd'
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
       payment_method_types: ['card'],
-      metadata: {
-        bookingId: bookingId.toString(),
-      },
+      customer_email: req.userEmail, // pode ser undefined
+      line_items: [
+        {
+          price_data: {
+            currency: 'eur',
+            unit_amount: Math.round(booking.totalPrice * 100),
+            product_data: {
+              name: `Reserva em ${hotel?.name || 'Hotel'}`,
+            },
+          },
+          quantity: 1,
+        },
+      ],
+      metadata: { bookingId: bookingId.toString() },
+      success_url: `${process.env.FRONT_URL}/guest?paid=success`,
+      cancel_url: `${process.env.FRONT_URL}/guest?paid=cancel`,
     });
 
-    // devolve clientSecret
-    res.json({
-      clientSecret: paymentIntent.client_secret,
-      paymentIntentId: paymentIntent.id,
-    });
-  } catch (error) {
-    console.error('Erro ao criar PaymentIntent:', error);
-    res.status(500).json({ message: 'Erro interno no servidor' });
+    res.json({ url: session.url });
+  } catch (err) {
+    console.error('Erro interno createCheckout:', err);
+    res.status(500).json({ message: 'Erro interno' });
   }
+};
+
+/* ───────── POST /payments/webhook ───────── */
+export const webhook: RequestHandler = async (req, res) => {
+  let event: Stripe.Event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      req.headers['stripe-signature'] as string,
+      process.env.STRIPE_WEBHOOK_SECRET!,
+    );
+  } catch (err: any) {
+    res.status(400).send(`Webhook error: ${err.message}`);
+    return;
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const bookingId = session.metadata?.bookingId;
+
+    const booking = await Booking.findByIdAndUpdate(
+      bookingId,
+      { status: 'paid' },
+      { new: true },
+    ).lean();
+
+    if (!booking) {
+      res.json({ received: true });
+      return;
+    }
+
+    const hotel = await Hotel.findById(booking.hotelId, { name: 1 }).lean();
+    const pdfUrl = await generateInvoicePdf(booking, hotel);
+
+    await Invoice.create({
+      hospedeId: booking.hospedeId,
+      bookingId: booking._id,
+      pdfUrl,
+    });
+  }
+
+  res.json({ received: true });
 };

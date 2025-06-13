@@ -1,12 +1,17 @@
+// src/routes/payment.routes.ts
+
 import { Router } from 'express';
-import { createPaymentIntent } from '../controllers/payment.controller';
 import { checkAuth } from '../middlewares/checkAuth';
-import { checkRole } from '../middlewares/checkRole';
+import { createCheckout, webhook } from '../controllers/payment.controller';
 
 const router = Router();
 
-// POST /payments/create
-//router.post('/create', checkAuth, checkRole, createPaymentIntent);
-router.post('/create', checkAuth, createPaymentIntent);
+// Inicia um checkout session para a reserva especificada
+// POST /payments/checkout
+router.post('/checkout', checkAuth, createCheckout);
+
+// Recebe webhooks do Stripe (montado com express.raw em index.ts)
+// POST /payments/webhook
+router.post('/webhook', webhook);
 
 export default router;
