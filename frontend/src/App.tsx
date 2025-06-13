@@ -17,7 +17,6 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Navbar />
-
         <Routes>
           {/* públicas */}
           <Route path="/login" element={<Login />} />

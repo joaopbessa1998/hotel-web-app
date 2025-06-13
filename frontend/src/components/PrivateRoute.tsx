@@ -1,22 +1,25 @@
-import React, { ReactNode, useContext } from 'react';
-import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+// frontend/src/components/PrivateRoute.tsx
+import { ReactNode, useContext } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { AuthContext } from '@/context/AuthContext';
 
-interface IProps {
+interface Props {
   children: ReactNode;
   roles?: ('hospede' | 'hotel')[];
 }
 
-const PrivateRoute: React.FC<IProps> = ({ children, roles }) => {
-  const { user } = useContext(AuthContext);
+const PrivateRoute = ({ children, roles }: Props) => {
+  const { user, loading } = useContext(AuthContext);
+  const location = useLocation();
 
-  // não autenticado - redireciona para login
-  if (!user) return <Navigate to="/login" replace />;
+  if (loading) return <p className="p-6">A verificar sessão…</p>;
 
-  // autenticado mas sem role permitida - redirectiona para home
-  if (roles && roles.includes(user.role)) return <Navigate to="/" replace />;
+  if (!user)
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
 
-  return children;
+  if (roles && !roles.includes(user.role)) return <Navigate to="/" replace />;
+
+  return <>{children}</>;
 };
 
 export default PrivateRoute;
