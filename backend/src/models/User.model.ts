@@ -6,6 +6,8 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: 'hospede' | 'hospede';
+  phone?: string;
+  address?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,6 +23,8 @@ const UserSchema = new Schema<IUser>(
       enum: ['hospede', 'hotel'],
       default: 'hospede',
     },
+    phone: { type: String },
+    address: { type: String },
   },
   { timestamps: true }, // faz o mongoose criar createdAt e updatedAt automaticamente
 );

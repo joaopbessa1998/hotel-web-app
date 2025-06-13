@@ -1,43 +1,45 @@
-import { Request, Response, NextFunction } from 'express';
+// backend/src/middlewares/checkAuth.ts
+import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallbacksecret';
 
+/* payload que colocaste no token */
 interface JwtPayload {
   userId: string;
-  role: string;
+  role: 'hospede' | 'hotel';
   iat: number;
   exp: number;
 }
 
-export const checkAuth = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
+/**
+ * Middleware:
+ *  1. Lê "Authorization: Bearer <token>"
+ *  2. Verifica JWT
+ *  3. Adiciona userId e role ao req
+ */
+export const checkAuth: RequestHandler = (req, res, next) => {
+  /* 1) header presente? */
+  const hdr = req.header('Authorization');
+  if (!hdr?.startsWith('Bearer ')) {
+    res.status(401).json({ message: 'Sem token de autorização' });
+    return;
+  }
+
+  const token = hdr.split(' ')[1];
+
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      res.status(401).json({ message: 'Sem token de autorização' });
-      return;
-    }
-
-    const token = authHeader.split(' ')[1];
-    if (!token) {
-      res.status(401).json({ message: 'Token inválido!' });
-      return;
-    }
-
+    /* 2) verifica JWT */
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
-    (req as any).userId = decoded.userId;
-    (req as any).role = decoded.role;
+    /* 3) injeta no req – tipado via declaration merging */
+    req.userId = decoded.userId;
+    req.role = decoded.role;
 
-    next(); // segue para o próximo middleware ou controller
-  } catch (error) {
+    next();
+  } catch {
     res
       .status(401)
       .json({ message: 'Acesso negado. Token inválido ou expirado!' });
-    return;
   }
 };
