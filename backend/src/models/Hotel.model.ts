@@ -53,6 +53,7 @@ const HotelSchema = new Schema(
     address: { type: AddressSchema, required: true },
     contact: { type: ContactSchema, required: true },
     roomTypes: { type: [RoomTypeSchema], default: [] },
+    totalRooms: { type: Number, required: true, default: 0 },
     facilities: { type: [String], default: [] },
     photos: { type: [String], default: [] },
     owner: {

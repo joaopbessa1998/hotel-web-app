@@ -14,8 +14,7 @@ export const createHotel: RequestHandler = async (req, res) => {
       stars,
       address,
       contact,
-      rooms,
-      totalRooms,
+      roomTypes,
       facilities,
       photos,
     } = req.body;
@@ -26,13 +25,17 @@ export const createHotel: RequestHandler = async (req, res) => {
       return;
     }
 
+    const totalRooms = Array.isArray(roomTypes)
+      ? (roomTypes as any[]).reduce((sum, r) => sum + Number(r.quantity), 0)
+      : 0;
+
     const newHotel = await Hotel.create({
       name,
       description,
       stars,
       address,
       contact,
-      rooms,
+      roomTypes,
       totalRooms,
       facilities,
       photos,
