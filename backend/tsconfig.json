@@ -1,13 +1,43 @@
+// {
+//   "compilerOptions": {
+//     "typeRoots": ["./src/types", "./node_modules/@types"],
+//     "target": "es2017",
+//     "module": "commonjs",
+//     "rootDir": "src",
+//     "outDir": "dist",
+//     "strict": true,
+//     "esModuleInterop": true,
+//     "skipLibCheck": true
+//   },
+//   "include": ["src", "scripts"]
+// }
+
 {
   "compilerOptions": {
-    "typeRoots": ["./src/types", "./node_modules/@types"],
-    "target": "es2017",
-    "module": "commonjs",
-    "rootDir": "src",
-    "outDir": "dist",
+    "target": "ES2020",
+    "module": "CommonJS",
+    "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "outDir": "dist",
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    "typeRoots": ["./src/types", "./node_modules/@types"],
+    "types": ["node", "jest"]
   },
-  "include": ["src"]
+
+  "include": [
+    "src/**/*.ts",
+    "scripts/**/*.ts", // ← inclui também os seeds
+    "src/types/**/*.d.ts"
+  ],
+
+  "exclude": ["node_modules", "dist"]
 }

@@ -1,5 +1,3 @@
-// src/components/FiltersSidebar.tsx
-
 import { ChangeEvent } from 'react';
 
 export type BoolFilters = {
@@ -20,13 +18,13 @@ export type BoolFilters = {
   onSiteRestaurant: boolean; // Restaurante no local
   bar: boolean; // Bar
   laundry: boolean; // Lavandaria
-  kitchenette: boolean; // Kitchenette
+  kitchenette: boolean; // cozinha no quarto
   balcony: boolean; // Varanda
   oceanView: boolean; // Vista para o mar
   businessCenter: boolean; // Centro de negócios
   meetingRooms: boolean; // Salas de reuniões
   wheelchairAccess: boolean; // Acesso para cadeiras de rodas
-  reception24h: boolean; // Recepção 24h
+  reception24h: boolean; // Receção 24h
   elevator: boolean; // Elevador
 };
 

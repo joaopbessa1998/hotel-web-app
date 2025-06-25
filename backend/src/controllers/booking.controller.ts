@@ -4,27 +4,27 @@ import Hotel from '../models/Hotel.model';
 import { nightsBetween } from '../utils/dateUtils';
 import { roomsBooked } from '../utils/bookingUtils';
 
-// ───────── CRIAR RESERVA ─────────
+// cria reserva
 export const createBooking: RequestHandler = async (req, res) => {
   try {
     const hospedeId = (req as any).userId;
     const { hotelId, roomType, checkIn, checkOut, adults, children } = req.body;
 
-    // 1) Verifica hotel existe
+    // verifica hotel existe
     const hotel = await Hotel.findById(hotelId).lean();
     if (!hotel) {
       res.status(404).json({ message: 'Hotel não encontrado' });
       return;
     }
 
-    // 2) Verifica tipo de quarto
+    // verifica tipo de quarto
     const roomInfo = hotel.roomTypes.find((r) => r.type === roomType);
     if (!roomInfo) {
       res.status(400).json({ message: 'Tipo de quarto inválido' });
       return;
     }
 
-    // 3) Verifica disponibilidade
+    // verifica disponibilidade
     const ocupados = await roomsBooked(
       hotelId,
       roomType,
@@ -36,11 +36,11 @@ export const createBooking: RequestHandler = async (req, res) => {
       return;
     }
 
-    // 4) Calcula preço
+    // calcula preço
     const nights = nightsBetween(new Date(checkIn), new Date(checkOut));
     const totalPrice = nights * roomInfo.nightlyRate;
 
-    // 5) Cria a reserva
+    // cria reserva
     const booking = await Booking.create({
       hospedeId,
       hotelId,
@@ -60,7 +60,7 @@ export const createBooking: RequestHandler = async (req, res) => {
   }
 };
 
-// ───────── LISTAR RESERVAS ─────────
+// list nas reservas
 export const getAllBookings: RequestHandler = async (req, res) => {
   try {
     const role = (req as any).role as string;
@@ -91,7 +91,7 @@ export const getAllBookings: RequestHandler = async (req, res) => {
   }
 };
 
-// ───────── OBTÉM RESERVA POR ID ─────────
+// fetch reserva por id
 export const getBookingById: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
@@ -126,7 +126,7 @@ export const getBookingById: RequestHandler = async (req, res) => {
   }
 };
 
-// ───────── ATUALIZAR RESERVA ─────────
+// update na reserva
 export const updateBooking: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
@@ -139,7 +139,7 @@ export const updateBooking: RequestHandler = async (req, res) => {
       return;
     }
 
-    // Mesma lógica de permissão de getBookingById
+    // mesma lógica de permissão de getBookingById
     const isOwnerOfHotel =
       role === 'hotel' &&
       (await Hotel.findById(booking.hotelId))?.owner.toString() === userId;
@@ -150,7 +150,7 @@ export const updateBooking: RequestHandler = async (req, res) => {
       return;
     }
 
-    // Atualiza só os campos permitidos
+    // atualiza só os campos permitidos
     const { checkIn, checkOut, adults, children, status, totalPrice } =
       req.body;
     if (checkIn) booking.checkIn = new Date(checkIn);
@@ -168,7 +168,7 @@ export const updateBooking: RequestHandler = async (req, res) => {
   }
 };
 
-// ───────── APAGAR / CANCELAR RESERVA ─────────
+// apagar / cancelar reserva
 export const deleteBooking: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;

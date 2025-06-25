@@ -1,5 +1,3 @@
-// src/components/Layout/Navbar.tsx
-
 import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '@/context/AuthContext';
@@ -14,18 +12,18 @@ export default function Navbar() {
         onClick={() => navigate('/')}
         className="text-xl font-bold cursor-pointer"
       >
-        WEBAPP HOTÉIS
+        WEBAPP HOTÉIS MERN
       </h1>
 
       {user ? (
-        // ----------- user autenticado -----------
+        // user autenticado
         <div className="flex items-center gap-4">
           {user.role === 'hospede' ? (
             <Link
               to="/guest"
               className="bg-blue-600 text-white py-1.5 px-4 rounded-md hover:bg-blue-700"
             >
-              Minha&nbsp;área
+              Área pessoal
             </Link>
           ) : (
             <Link
@@ -46,7 +44,7 @@ export default function Navbar() {
           </button>
         </div>
       ) : (
-        // ----------- não autenticado -----------
+        // nao autenticado
         <div className="flex gap-2">
           <button
             onClick={() => navigate('/login')}

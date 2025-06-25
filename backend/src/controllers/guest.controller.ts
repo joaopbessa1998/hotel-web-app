@@ -3,13 +3,13 @@ import User from '../models/User.model';
 import Booking from '../models/Booking.model';
 import Invoice from '../models/Invoice.model';
 
-/* ───────── GET /my-profile ───────── */
+// get /my-profile
 export const getProfile: RequestHandler = async (req, res) => {
   const user = await User.findById(req.userId).select('-password');
   res.json(user); // user existe (token válido)
 };
 
-/* ───────── PUT /my-profile ───────── */
+// put /my-profile
 export const updateProfile: RequestHandler = async (req, res) => {
   const { name, phone, address } = req.body;
   const user = await User.findByIdAndUpdate(
@@ -20,7 +20,7 @@ export const updateProfile: RequestHandler = async (req, res) => {
   res.json(user);
 };
 
-/* ───────── GET /bookings (para hóspede) ───────── */
+// get /bookings (para hóspede)
 export const getMyBookings: RequestHandler = async (req, res) => {
   const bookings = await Booking.find({ hospedeId: req.userId }).populate(
     'hotelId',
@@ -29,7 +29,7 @@ export const getMyBookings: RequestHandler = async (req, res) => {
   res.json(bookings);
 };
 
-/* ───────── GET /invoices ───────── */
+// get /invoices
 export const getMyInvoices: RequestHandler = async (req, res) => {
   const invoices = await Invoice.find({ guestId: req.userId }).sort({
     createdAt: -1,
@@ -37,7 +37,7 @@ export const getMyInvoices: RequestHandler = async (req, res) => {
   res.json(invoices);
 };
 
-/* ───────── PATCH /bookings/:id  (cancelar) ───────── */
+// patch /bookings/:id  (cancelar)
 export const cancelBooking: RequestHandler = async (req, res) => {
   const { id } = req.params;
 

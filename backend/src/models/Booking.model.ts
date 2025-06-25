@@ -1,8 +1,8 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IBooking extends Document {
-  hospedeId: mongoose.Types.ObjectId; // referência ao user (role: 'hospede')
-  hotelId: mongoose.Types.ObjectId; // referência ao Hotel
+  hospedeId: mongoose.Types.ObjectId; // faz refer ao user (role: 'hospede')
+  hotelId: mongoose.Types.ObjectId; // faz refer ao Hotel
   checkIn: Date;
   checkOut: Date;
   adults: number;

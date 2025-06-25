@@ -1,7 +1,6 @@
 export const nightsBetween = (a: Date, b: Date) =>
   Math.ceil((+b - +a) / 86_400_000); // 86 400 000 ms = 1 dia
 
-// src/utils/bookingUtils.ts
 import Booking from '../models/Booking.model';
 
 export async function roomsBooked(

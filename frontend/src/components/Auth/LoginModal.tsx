@@ -3,7 +3,7 @@ import { AuthContext } from '@/context/AuthContext';
 
 interface Props {
   open: boolean;
-  // onOpenChange deixamos, mas se não for usado, é inofensivo
+  // onOpenChange fica, mas se não for usado, é inofensivo
   onOpenChange: (o: boolean) => void;
 }
 

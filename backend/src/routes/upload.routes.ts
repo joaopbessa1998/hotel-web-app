@@ -1,9 +1,8 @@
 import { Router, RequestHandler } from 'express';
 import multer, { FileFilterCallback } from 'multer';
 import path from 'node:path';
-import Hotel from '../models/Hotel.model'; // ajusta o caminho
+import Hotel from '../models/Hotel.model';
 
-/* ---------- storage local "uploads/" ---------- */
 const storage = multer.diskStorage({
   destination: 'uploads', // pasta
   filename: (_req, file, cb) => {
@@ -17,7 +16,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-/* ---------- handler tipado ---------- */
+// hnadler tipado
 const uploadPhoto: RequestHandler = async (req, res) => {
   const { id } = req.params;
 
@@ -32,7 +31,7 @@ const uploadPhoto: RequestHandler = async (req, res) => {
 
   await Hotel.findByIdAndUpdate(id, { $push: { photos: url } });
 
-  res.json({ url }); // não devolvemos explicitamente a Response
+  res.json({ url }); // não se devolve explicitamente a Response
 };
 
 const router = Router();

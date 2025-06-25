@@ -1,5 +1,3 @@
-// src/routes/hotel.routes.ts
-
 import { Router } from 'express';
 import { checkAuth } from '../middlewares/checkAuth';
 import { checkRole } from '../middlewares/checkRole';
@@ -17,15 +15,11 @@ import {
 
 const router = Router();
 
-// ─── Public ────────────────────────────────────────────────────
-
-// Lista todos os hotéis
-// GET /hotels
+// get /hoetls -> list todos os hoteis
 router.get('/', getAllHotels);
 
-// ─── “Meu hotel” (owner) ───────────────────────────────────────
-// Estas rotas precisam só de autenticação e usam os controller
-// que manipulam o hotel cujo owner === req.userId
+//  “Meu hotel” (owner)
+// estas rotas precisam só de autenticação e usam os controller que manipulam o hotel cujo owner === req.userId
 
 // GET    /hotels/my
 router.get('/my', checkAuth, getMyHotel);
@@ -39,14 +33,12 @@ router.patch('/my/facilities', checkAuth, updateMyFacilities);
 // DELETE /hotels/my/photo/:filename
 router.delete('/my/photo/:filename', checkAuth, deleteMyPhoto);
 
-// ─── Público por ID ────────────────────────────────────────────
 // Deve vir depois de `/my` para não ser apanhado pelo `/:id`
 
 // GET    /hotels/:id
 router.get('/:id', getHotelById);
 
-// ─── Protegido ─────────────────────────────────────────────────
-
+// Protegido
 // Cria um hotel (qualquer user autenticado)
 // POST   /hotels
 router.post('/', checkAuth, createHotel);

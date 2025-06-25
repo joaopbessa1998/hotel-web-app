@@ -6,9 +6,9 @@ import Invoice from '../models/Invoice.model';
 import { generateInvoicePdf } from '../utils/invoicePdf';
 import 'dotenv/config';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!); // usa default apiVersion
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!); // usa a default apiVersion
 
-/* ───────── POST /payments/checkout ───────── */
+// POST /payments/checkout
 export const createCheckout: RequestHandler = async (req, res) => {
   console.log('createCheckout headers:', req.headers);
   console.log('createCheckout body:', req.body);
@@ -25,13 +25,13 @@ export const createCheckout: RequestHandler = async (req, res) => {
       return;
     }
 
-    // popula somente o nome do hotel
+    // popula apenas o nome do hotel
     const hotel = await Hotel.findById(booking.hotelId, { name: 1 }).lean();
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
-      customer_email: req.userEmail, // pode ser undefined
+      customer_email: req.userEmail, // pode ser undefined (??)
       line_items: [
         {
           price_data: {
@@ -56,7 +56,7 @@ export const createCheckout: RequestHandler = async (req, res) => {
   }
 };
 
-/* ───────── POST /payments/webhook ───────── */
+// post /payments/webhook
 export const webhook: RequestHandler = async (req, res) => {
   let event: Stripe.Event;
 

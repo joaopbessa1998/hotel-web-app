@@ -15,14 +15,14 @@ import 'dotenv/config';
 dotenv.config(); // lê variáveis de ambiente do ficheiro .env
 
 // conectar ao mongoDB
-mongoose
-  .connect(process.env.MONGODB_URI as string)
-  .then(() => {
-    console.log('MongoDB conectado com sucesso!');
-  })
-  .catch((error) => {
-    console.error('Erro de conexão ao MongoDB:', error);
-  });
+// mongoose
+//   .connect(process.env.MONGODB_URI as string)
+//   .then(() => {
+//     console.log('MongoDB conectado com sucesso!');
+//   })
+//   .catch((error) => {
+//     console.error('Erro de conexão ao MongoDB:', error);
+//   });
 
 const app = express();
 
@@ -47,7 +47,25 @@ app.use('/guests', guestRoutes);
 //app.use('/', paymentRoutes);
 
 // iniciar servidor
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor a rodar na porta ${PORT}`);
-});
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, () => {
+//   console.log(`Servidor a rodar na porta ${PORT}`);
+// });
+export default app;
+
+if (require.main === module) {
+  const MONGO_URI = process.env.MONGODB_URI!;
+  mongoose
+    .connect(MONGO_URI)
+    .then(() => console.log('MongoDB connectado com sucesso!'))
+    .catch((err) => console.error('Erro de conexão ao MongoDB', err));
+
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`Servidor a rodar na porta ${PORT}`));
+}
+
+// if (require.main === module) {
+//   // só .listen() quando for executado diretamente
+//   const PORT = process.env.PORT || 3000;
+//   app.listen(PORT, () => console.log(`Servidor a rodar na porta ${PORT}`));
+// }

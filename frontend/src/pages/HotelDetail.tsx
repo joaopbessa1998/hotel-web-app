@@ -1,4 +1,3 @@
-// src/pages/HotelDetail.tsx
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '@/services/api';
@@ -46,7 +45,7 @@ export function HotelDetail() {
   const [roomType, setRoomType] = useState('');
   const [total, setTotal] = useState(0);
 
-  /* Carrega o hotel e inicializa roomType */
+  // Carrega o hotel e inicializa roomType
   useEffect(() => {
     api.get(`/hotels/${id}`).then((r) => {
       setHotel(r.data);
@@ -56,7 +55,7 @@ export function HotelDetail() {
     });
   }, [id]);
 
-  /* Recalcula total sempre que datas ou roomType mudem */
+  // Recalcula total sempre que datas ou roomType mudem
   useEffect(() => {
     if (!hotel || !checkIn || !checkOut || !roomType) return;
     const nights = dayjs(checkOut).diff(dayjs(checkIn), 'day');
@@ -66,7 +65,7 @@ export function HotelDetail() {
 
   if (!hotel) return <p className="p-6">A carregar…</p>;
 
-  /* Modal simples */
+  // modal simples
   const Modal = ({ children }: { children: React.ReactNode }) => (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50">
       <div className="bg-white w-full max-w-md rounded-lg p-6 shadow-xl">
@@ -75,7 +74,7 @@ export function HotelDetail() {
     </div>
   );
 
-  /* Submete reserva e dispara checkout Stripe */
+  // Submete reserva e dispara checkout Stripe
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -90,13 +89,13 @@ export function HotelDetail() {
     });
     const booking = res1.data.booking;
 
-    // 2) inicia a sessão Stripe corretamente
+    // inicia a sessão Stripe corretamente
     const res2 = await api.post('/payments/checkout', {
       bookingId: booking._id,
     });
     const { url } = res2.data;
 
-    // 3) redireciona
+    // redireciona
     window.location.href = url;
   };
 

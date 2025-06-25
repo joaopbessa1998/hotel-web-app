@@ -16,7 +16,7 @@ export default function ReservationsTable({ hotelId }: { hotelId: string }) {
   const [loading, setL] = useState(true);
   const [error, setErr] = useState('');
 
-  /* ─────── fetch on mount ─────── */
+  // fetch no mount
   useEffect(() => {
     (async () => {
       try {

@@ -7,7 +7,7 @@ export const checkRole = (allowedRoles: string[]): RequestHandler => {
 
     if (!allowedRoles.includes(userRole)) {
       res.status(403).json({ message: 'Acesso negado. Role não permitido.' });
-      return; // ← aqui garantimos que a função termina, mas retorna `void`
+      return; // aqui garante-se que a função termina, mas retorna `void`
     }
 
     next();

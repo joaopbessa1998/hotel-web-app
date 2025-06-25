@@ -31,19 +31,19 @@ export function GuestArea() {
     'profile',
   );
 
-  /* ---------- perfil ---------- */
+  // perfil
   const [profile, setProfile] = useState<Profile | null>(null);
   const [busyProfile, setBusyProfile] = useState(false);
 
-  /* ---------- bookings ---------- */
+  // bookings
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loadingB, setLoadingB] = useState(true);
 
-  /* ---------- invoices ---------- */
+  // invoices
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loadingI, setLoadingI] = useState(true);
 
-  /* carregamentos iniciais */
+  // carregamentos iniciaiss
   useEffect(() => {
     api.get('/auth/me').then((r) => setProfile(r.data));
 
@@ -58,7 +58,7 @@ export function GuestArea() {
     });
   }, []);
 
-  /* cancelar reserva */
+  // cancelar reserva
   const cancel = async (id: string) => {
     await api.patch(`/bookings/${id}`, { status: 'cancelled' });
     setBookings((cur) =>
@@ -90,7 +90,7 @@ export function GuestArea() {
         ))}
       </div>
 
-      {/* ---------- PERFIL ---------- */}
+      {/* perfil */}
       {tab === 'profile' && profile && (
         <form
           onSubmit={async (e) => {
@@ -142,7 +142,7 @@ export function GuestArea() {
         </form>
       )}
 
-      {/* ---------- RESERVAS ---------- */}
+      {/* reservas */}
       {tab === 'bookings' && (
         <>
           {loadingB ? (
@@ -203,7 +203,7 @@ export function GuestArea() {
         </>
       )}
 
-      {/* ---------- FATURAS ---------- */}
+      {/* faturas */}
       {tab === 'invoices' && (
         <>
           {loadingI ? (

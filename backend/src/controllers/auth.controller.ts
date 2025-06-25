@@ -1,5 +1,3 @@
-// src/controllers/auth.controller.ts
-
 import { RequestHandler } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -11,14 +9,14 @@ export const register: RequestHandler = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    // 1) Verifica se já existe user com este email
+    // verifica se já existe user com este email
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       res.status(400).json({ message: 'Email já registado.' });
       return;
     }
 
-    // 2) Encripta a password e cria o User
+    // encripta a password e cria o User
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
       name,
@@ -27,14 +25,14 @@ export const register: RequestHandler = async (req, res) => {
       password: hashedPassword,
     });
 
-    // 3) Gera token JWT
+    // gera token JWT
     const token = jwt.sign(
       { userId: newUser._id, role: newUser.role },
       JWT_SECRET,
       { expiresIn: '1d' },
     );
 
-    // 4) Envia resposta de sucesso
+    // envia resposta de sucesso
     res.status(201).json({
       message: 'Utilizador criado com sucesso!',
       user: {
@@ -57,7 +55,7 @@ export const login: RequestHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1) Procura o user
+    // procura o user
     const user = await User.findOne({ email });
     if (!user) {
       res
@@ -66,7 +64,7 @@ export const login: RequestHandler = async (req, res) => {
       return;
     }
 
-    // 2) Verifica password
+    // verifica password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       res
@@ -75,12 +73,12 @@ export const login: RequestHandler = async (req, res) => {
       return;
     }
 
-    // 3) Gera token
+    // gera token
     const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, {
       expiresIn: '1d',
     });
 
-    // 4) Envia resposta
+    // envia resposta
     res.json({
       message: 'Login bem sucedido!',
       user: {

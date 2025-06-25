@@ -1,10 +1,8 @@
-// src/utils/invoicePdf.ts
-
 import fs from 'fs';
 import path from 'path';
 import PDFDocument from 'pdfkit';
 
-// Não precisamos de tipar tão estritamente — recebemos o doc completo do Mongoose
+// Não preciso d tipar tão estritamente — recebemos o doc completo do Mongoose
 export async function generateInvoicePdf(
   booking: any,
   hotel: any,
@@ -25,7 +23,7 @@ export async function generateInvoicePdf(
     doc.fontSize(20).text('Fatura de Reserva', { align: 'center' }).moveDown();
 
     // Dados do hóspede
-    // Ajusta estes campos ao que realmente tens em Booking.model.ts
+    // Ajustar confirmar estes campos ao Booking.model.ts
     doc
       .fontSize(12)
       .text(`Cliente: ${booking.guestName || booking.guest?.name || '—'}`)

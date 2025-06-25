@@ -1,4 +1,3 @@
-// src/components/HotelOwner/PhotoUploader.tsx
 import { useState, FormEvent } from 'react';
 import api from '@/services/api';
 

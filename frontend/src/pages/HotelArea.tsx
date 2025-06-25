@@ -1,5 +1,3 @@
-// src/pages/HotelArea.tsx
-
 import { useEffect, useState } from 'react';
 import api from '@/services/api';
 import HotelForm from '@/components/HotelOwner/HotelForm';

@@ -1,10 +1,8 @@
-// src/controllers/hotel.controller.ts
-
 import { RequestHandler } from 'express';
 import Hotel from '../models/Hotel.model';
 import User from '../models/User.model';
 
-// ─── Criar hotel ───────────────────────────────────────────────
+// criar hotel
 export const createHotel: RequestHandler = async (req, res) => {
   try {
     const userId = (req as any).userId;
@@ -52,7 +50,7 @@ export const createHotel: RequestHandler = async (req, res) => {
   }
 };
 
-// ─── Listar todos os hotéis ─────────────────────────────────────
+// list todos os hotéis
 export const getAllHotels: RequestHandler = async (req, res) => {
   try {
     const q = req.query as Record<string, string | undefined>;
@@ -134,7 +132,7 @@ export const getAllHotels: RequestHandler = async (req, res) => {
   }
 };
 
-// ─── Obter hotel por ID ─────────────────────────────────────────
+// hotel por id
 export const getHotelById: RequestHandler = async (req, res) => {
   try {
     const hotel = await Hotel.findById(req.params.id);
@@ -149,7 +147,7 @@ export const getHotelById: RequestHandler = async (req, res) => {
   }
 };
 
-// ─── Atualizar hotel por ID ─────────────────────────────────────
+// update hotel por id
 export const updateHotelById: RequestHandler = async (req, res) => {
   try {
     const userId = (req as any).userId;
@@ -174,7 +172,7 @@ export const updateHotelById: RequestHandler = async (req, res) => {
   }
 };
 
-// ─── Apagar hotel por ID ────────────────────────────────────────
+// apagar hotel por id
 export const deleteHotelById: RequestHandler = async (req, res) => {
   try {
     const userId = (req as any).userId;
@@ -195,7 +193,7 @@ export const deleteHotelById: RequestHandler = async (req, res) => {
   }
 };
 
-// ─── Operações “Meu Hotel” ─────────────────────────────────────
+// operacoes "meu hotel"
 export const getMyHotel: RequestHandler = async (req, res) => {
   try {
     const hotel = await Hotel.findOne({ owner: (req as any).userId });

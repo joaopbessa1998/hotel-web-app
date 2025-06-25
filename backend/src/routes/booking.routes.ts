@@ -17,7 +17,7 @@ const router = Router();
 // Criar reserva (apenas hospede)
 router.post('/', checkAuth, checkRole(['hospede']), createBooking);
 
-// Listar reservas do user (hospede ou hotel)
+// List reservas do user (hospede ou hotel)
 router.get('/', checkAuth, getAllBookings);
 
 // Obter detalhe de uma reserva
