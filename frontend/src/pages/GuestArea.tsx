@@ -49,6 +49,7 @@ export function GuestArea() {
 
     api.get('/bookings').then((r) => {
       setBookings(r.data);
+      console.log('setBookings:', r.data);
       setLoadingB(false);
     });
 
@@ -158,13 +159,13 @@ export function GuestArea() {
                     <th className="px-3 py-2">Check-in</th>
                     <th className="px-3 py-2">Check-out</th>
                     <th className="px-3 py-2">Estado</th>
-                    <th className="px-3 py-2"></th>
+                    <th className="px-3 py-2">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {bookings.map((b) => (
                     <tr key={b._id} className="even:bg-gray-50">
-                      <td className="px-3 py-2">{b.hotelId.name}</td>
+                      <td className="px-3 py-2 text-left">{b.hotelId?.name}</td>
                       <td className="px-3 py-2">{b.checkIn.slice(0, 10)}</td>
                       <td className="px-3 py-2">{b.checkOut.slice(0, 10)}</td>
                       <td className="px-3 py-2 capitalize">{b.status}</td>
@@ -172,14 +173,14 @@ export function GuestArea() {
                         {b.status === 'pending' && (
                           <button
                             onClick={() => cancel(b._id)}
-                            className="text-red-600 underline"
+                            className="text-red-600 underline mr-4 cursor-pointer"
                           >
                             Cancelar
                           </button>
                         )}
                         {b.status === 'pending' && (
                           <button
-                            className="text-blue-600 underline"
+                            className="text-blue-600 underline cursor-pointer"
                             onClick={async () => {
                               const { data } = await api.post(
                                 '/payments/checkout',
