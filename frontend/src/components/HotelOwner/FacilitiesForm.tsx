@@ -8,6 +8,15 @@ const FACILITIES = [
   'petFriendly',
   'evCharger',
   'roomService',
+  'airConditioning',
+  'fitnessCenter',
+  'spa',
+  'onSiteRestaurant',
+  'bar',
+  'laundry',
+  'kitchenette',
+  'balcony',
+  'oceanView',
 ] as const;
 type Fac = (typeof FACILITIES)[number];
 
@@ -48,7 +57,7 @@ export default function FacilitiesForm({
           {f}
         </label>
       ))}
-      <button className="mt-2 px-3 py-1.5 bg-green-600 text-white rounded">
+      <button className="mt-2 px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer">
         Guardar
       </button>
     </form>
