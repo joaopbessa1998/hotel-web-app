@@ -22,6 +22,8 @@ export function HotelArea() {
       });
   }, []);
 
+  console.log('hotel:', hotel);
+
   if (hotel === null) {
     return <p className="p-6 text-center">A carregar hotel…</p>;
   }

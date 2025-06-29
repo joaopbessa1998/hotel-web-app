@@ -45,7 +45,8 @@ export function GuestArea() {
 
   // carregamentos iniciaiss
   useEffect(() => {
-    api.get('/auth/me').then((r) => setProfile(r.data));
+    //api.get('/auth/me').then((r) => setProfile(r.data));
+    api.get('/guests/my-profile').then((r) => setProfile(r.data));
 
     api.get('/bookings').then((r) => {
       setBookings(r.data);
@@ -57,6 +58,28 @@ export function GuestArea() {
       setInvoices(r.data);
       setLoadingI(false);
     });
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const paid = params.get('paid');
+    const bookingId = params.get('booking');
+
+    if (paid === 'success' && bookingId) {
+      api
+        .post('/payments/confirm', { bookingId })
+        .then(() => {
+          // Atualiza estado local para refletir novo status
+          setBookings((prev) =>
+            prev.map((b) =>
+              b._id === bookingId ? { ...b, status: 'paid' } : b,
+            ),
+          );
+        })
+        .catch((err) => {
+          console.error('Erro ao confirmar pagamento:', err);
+        });
+    }
   }, []);
 
   // cancelar reserva
@@ -97,7 +120,7 @@ export function GuestArea() {
           onSubmit={async (e) => {
             e.preventDefault();
             setBusyProfile(true);
-            const { data } = await api.put('/auth/me', profile);
+            const { data } = await api.put('/guests/my-profile', profile);
             setProfile(data);
             setBusyProfile(false);
           }}

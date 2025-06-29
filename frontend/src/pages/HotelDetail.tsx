@@ -45,6 +45,13 @@ export function HotelDetail() {
   const [roomType, setRoomType] = useState('');
   const [total, setTotal] = useState(0);
 
+  useEffect(() => {
+    const minCheckOut = dayjs(checkIn).add(1, 'day').format('YYYY-MM-DD');
+    if (dayjs(checkOut).isBefore(minCheckOut)) {
+      setOut(minCheckOut);
+    }
+  }, [checkIn]);
+
   // Carrega o hotel e inicializa roomType
   useEffect(() => {
     api.get(`/hotels/${id}`).then((r) => {
@@ -62,6 +69,25 @@ export function HotelDetail() {
     const rt = hotel.roomTypes.find((r) => r.type === roomType);
     setTotal(rt ? rt.nightlyRate * nights : 0);
   }, [hotel, checkIn, checkOut, roomType]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const paid = params.get('paid');
+    const bookingId = params.get('booking');
+
+    if (paid === 'success' && bookingId) {
+      api
+        .post('/payments/confirm', {
+          bookingId,
+        })
+        .then(() => {
+          console.log('Pagamento confirmado manualmente!');
+        })
+        .catch((err) => {
+          console.log('Erro ao confirmar o pagamento', err);
+        });
+    }
+  }, []);
 
   if (!hotel) return <p className="p-6">A carregar…</p>;
 
@@ -100,20 +126,20 @@ export function HotelDetail() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-6">
+    <div className="max-w-5xl mx-auto p-6 space-y-6 flex flex-col">
       {/* Slider de fotos */}
       <Swiper
         modules={[Navigation, Pagination]}
         navigation
         pagination={{ clickable: true }}
-        className="rounded-lg overflow-hidden"
+        className="rounded-lg overflow-hidden w-full"
       >
         {hotel.photos.map((url, idx) => (
           <SwiperSlide key={idx}>
             <img
               src={url}
               alt={`${hotel.name} ${idx + 1}`}
-              className="w-full h-72 object-cover"
+              className="w-full h-96 object-cover"
             />
           </SwiperSlide>
         ))}
@@ -121,19 +147,19 @@ export function HotelDetail() {
 
       {/* Informações */}
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold">{hotel.name}</h2>
+        <h2 className="text-2xl font-bold text-left">{hotel.name}</h2>
         <p className="text-sm text-gray-500 flex items-center gap-2">
           <span>
             {hotel.address.street} {hotel.address.number}, {hotel.address.city}
           </span>
           <span>{'★'.repeat(hotel.stars)}</span>
         </p>
-        <p>{hotel.description}</p>
+        <p className="text-left">{hotel.description}</p>
       </div>
 
       {/* Facilities */}
       <div>
-        <h3 className="font-semibold mb-2">Comodidades</h3>
+        <h3 className="font-semibold mb-2 text-left">Comodidades</h3>
         <ul className="flex flex-wrap gap-2">
           {hotel.facilities.map((f) => (
             <li key={f} className="px-3 py-1 rounded-full bg-gray-100 text-sm">
@@ -146,7 +172,7 @@ export function HotelDetail() {
       {/* Botão reservar */}
       <button
         onClick={() => setOpen(true)}
-        className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ml-0 cursor-pointer"
       >
         Reservar
       </button>

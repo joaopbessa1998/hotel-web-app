@@ -1,0 +1,45 @@
+HOTEL RIA E SALINAS
+acc1@hotel.com
+123456
+
+PÁTIO ALENTEJANO BOUTIQUE
+acc2@hotel.com
+123456
+
+RESIDENCIAL SANTUÁRIO
+acc3@hotel.com
+123456
+
+HOTEL SÉ VELHA
+acc4@hotel.com
+123456
+
+CONVENTO ÉVORA PALACE
+acc5@hotel.com
+123456
+
+PRAIA DO FARO RESORT
+acc6@hotel.com
+123456
+
+SERRA DESIGN HOTEL
+acc7@hotel.com
+123456
+
+CASTELO DE LEIRIA BOUTIQUE
+acc8@hotel.com
+123456
+
+ENCOSTA ATLÂNTICA RETREAT
+acc9@hotel.com
+123456
+
+PLANÍCIE ALENTEJANA LODGE
+acc10@hotel.com
+123456
+
+
+
+## USERS
+acc11@hotel.com
+123456
