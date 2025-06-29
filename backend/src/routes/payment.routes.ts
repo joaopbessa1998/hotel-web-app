@@ -1,6 +1,10 @@
 import { Router } from 'express';
 import { checkAuth } from '../middlewares/checkAuth';
-import { createCheckout, webhook } from '../controllers/payment.controller';
+import {
+  confirmPayment,
+  createCheckout,
+  webhook,
+} from '../controllers/payment.controller';
 
 const router = Router();
 
@@ -11,5 +15,8 @@ router.post('/checkout', checkAuth, createCheckout);
 // Recebe webhooks do Stripe (montado com express.raw no index.ts)
 // POST /payments/webhook
 router.post('/webhook', webhook);
+
+// Endpoint que lida com payment?success
+router.post('/confirm', confirmPayment);
 
 export default router;

@@ -45,7 +45,8 @@ export const createCheckout: RequestHandler = async (req, res) => {
         },
       ],
       metadata: { bookingId: bookingId.toString() },
-      success_url: `${process.env.FRONT_URL}/guest?paid=success`,
+      //success_url: `${process.env.FRONT_URL}/guest?paid=success`,
+      success_url: `${process.env.FRONT_URL}/guest?paid=success&booking=${bookingId}`,
       cancel_url: `${process.env.FRONT_URL}/guest?paid=cancel`,
     });
 
@@ -97,4 +98,37 @@ export const webhook: RequestHandler = async (req, res) => {
   }
 
   res.json({ received: true });
+};
+
+export const confirmPayment: RequestHandler = async (req, res) => {
+  const { bookingId } = req.body;
+
+  if (!bookingId) {
+    res.status(400).json({
+      message: 'Missing bookingId.',
+    });
+    return;
+  }
+
+  const booking = await Booking.findById(bookingId);
+  if (!booking) {
+    res.status(404).json({
+      message: 'Booking not found.',
+    });
+    return;
+  }
+
+  if (booking.status === 'paid') {
+    res.status(200).json({
+      message: 'Already paid.',
+    });
+    return;
+  }
+
+  booking.status = 'paid';
+  await booking.save();
+
+  res.status(200).json({
+    success: true,
+  });
 };
