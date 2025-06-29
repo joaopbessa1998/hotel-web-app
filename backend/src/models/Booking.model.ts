@@ -1,7 +1,8 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import { IUser } from './User.model';
 
 export interface IBooking extends Document {
-  hospedeId: mongoose.Types.ObjectId; // faz refer ao user (role: 'hospede')
+  hospedeId: mongoose.Types.ObjectId | IUser; // faz refer ao user (role: 'hospede')
   hotelId: mongoose.Types.ObjectId; // faz refer ao Hotel
   checkIn: Date;
   checkOut: Date;

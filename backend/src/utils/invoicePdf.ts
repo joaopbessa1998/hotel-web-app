@@ -20,39 +20,74 @@ export async function generateInvoicePdf(
     doc.pipe(stream);
 
     // Cabeçalho
-    doc.fontSize(20).text('Fatura de Reserva', { align: 'center' }).moveDown();
+    doc.fontSize(20).text('Fatura de Reserva', { align: 'left' }).moveDown();
 
     // Dados do hóspede
     // Ajustar confirmar estes campos ao Booking.model.ts
+    //   doc
+    //     .fontSize(12)
+    //     .text(`Cliente: ${booking.guestName || booking.guest?.name || '—'}`)
+    //     .text(`Email: ${booking.guestEmail || booking.guest?.email || '—'}`)
+    //     .text(
+    //       `Período: ${new Date(
+    //         booking.startDate,
+    //       ).toLocaleDateString()} – ${new Date(
+    //         booking.endDate,
+    //       ).toLocaleDateString()}`,
+    //     )
+    //     .moveDown();
+
+    //   // Dados do hotel
+    //   doc
+    //     .text(`Hotel: ${hotel.name}`)
+    //     .text(
+    //       `Localização: ${hotel.address?.city || '—'}, ${
+    //         hotel.address?.country || '—'
+    //       }`,
+    //     )
+    //     .moveDown();
+
+    //   // Valor
+    //   doc
+    //     .text(`Preço Total: €${(booking.totalPrice || 0).toFixed(2)}`)
+    //     .moveDown(2);
+
+    //   doc.text('Obrigado pela preferência!', { align: 'center' });
+
+    //   doc.end();
+
+    //   stream.on('finish', () => resolve(`/uploads/invoices/${filename}`));
+    //   stream.on('error', reject);
+    // });
+
+    // dados do hóspede
     doc
       .fontSize(12)
-      .text(`Cliente: ${booking.guestName || booking.guest?.name || '—'}`)
-      .text(`Email: ${booking.guestEmail || booking.guest?.email || '—'}`)
+      .text(`Cliente: ${booking.hospedeId?.name || '--'}`)
+      .text(`Email: ${booking.hospedeId?.email || '--'}`)
       .text(
-        `Período: ${new Date(
-          booking.startDate,
-        ).toLocaleDateString()} – ${new Date(
-          booking.endDate,
-        ).toLocaleDateString()}`,
+        `Período: ${new Date(booking.checkIn).toLocaleDateString(
+          'pt-PT',
+        )} – ${new Date(booking.checkOut).toLocaleDateString('pt-PT')}`,
       )
       .moveDown();
 
-    // Dados do hotel
+    // dados do hotel
+    const city = hotel.address?.city || '—';
+    const country = hotel.address?.country || '—';
     doc
-      .text(`Hotel: ${hotel.name}`)
-      .text(
-        `Localização: ${hotel.address?.city || '—'}, ${
-          hotel.address?.country || '—'
-        }`,
-      )
+      .text(`Hotel: ${hotel?.name || '--'}`)
+      .text(`Localização: ${city}, ${country}`)
       .moveDown();
 
-    // Valor
+    // alor
     doc
       .text(`Preço Total: €${(booking.totalPrice || 0).toFixed(2)}`)
       .moveDown(2);
 
-    doc.text('Obrigado pela preferência!', { align: 'center' });
+    doc.text('Obrigado pela sua preferência em reservar connosco!', {
+      align: 'left',
+    });
 
     doc.end();
 

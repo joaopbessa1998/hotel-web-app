@@ -28,8 +28,8 @@ const app = express();
 
 // middleware
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
-app.use(express.json());
 app.use('/payments/webhook', express.raw({ type: 'application/json' }));
+app.use(express.json());
 // rota de teste
 app.get('/ping', (req: Request, res: Response) => {
   res.send('Pong');

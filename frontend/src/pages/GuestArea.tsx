@@ -60,6 +60,8 @@ export function GuestArea() {
     });
   }, []);
 
+  console.log('Invoices data:', invoices);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const paid = params.get('paid');
@@ -247,13 +249,14 @@ export function GuestArea() {
                 <tbody>
                   {invoices.map((inv) => (
                     <tr key={inv._id} className="even:bg-gray-50">
-                      <td className="px-3 py-2">{inv.bookingId}</td>
+                      <td className="px-3 py-2 text-left">{inv.bookingId}</td>
                       <td className="px-3 py-2">
                         {inv.createdAt.slice(0, 10)}
                       </td>
                       <td className="px-3 py-2">
                         <a
-                          href={inv.pdfUrl}
+                          // href={inv.pdfUrl}
+                          href={`http://localhost:3000${inv.pdfUrl}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 underline"

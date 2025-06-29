@@ -5,6 +5,7 @@ import Hotel from '../models/Hotel.model';
 import Invoice from '../models/Invoice.model';
 import { generateInvoicePdf } from '../utils/invoicePdf';
 import 'dotenv/config';
+import { IUser } from '@/models/User.model';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!); // usa a default apiVersion
 
@@ -68,36 +69,82 @@ export const webhook: RequestHandler = async (req, res) => {
       process.env.STRIPE_WEBHOOK_SECRET!,
     );
   } catch (err: any) {
+    console.error('Erro ao validar assinatura do Stripe:', err.message);
     res.status(400).send(`Webhook error: ${err.message}`);
     return;
   }
 
+  console.log('Tipo de evento recebido:', event.type);
+
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as Stripe.Checkout.Session;
-    const bookingId = session.metadata?.bookingId;
+    res.json({ received: true });
 
-    const booking = await Booking.findByIdAndUpdate(
-      bookingId,
-      { status: 'paid' },
-      { new: true },
-    ).lean();
+    (async () => {
+      try {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const bookingId = session.metadata?.bookingId;
 
-    if (!booking) {
-      res.json({ received: true });
-      return;
-    }
+        if (!bookingId) {
+          console.error('bookingId em falta');
+          res.status(400).send('bookingId em falta');
+          return;
+        }
 
-    const hotel = await Hotel.findById(booking.hotelId, { name: 1 }).lean();
-    const pdfUrl = await generateInvoicePdf(booking, hotel);
+        const booking = await Booking.findByIdAndUpdate(
+          bookingId,
+          { status: 'paid' },
+          { new: true },
+        ).populate('hospedeId', 'name email');
 
-    await Invoice.create({
-      hospedeId: booking.hospedeId,
-      bookingId: booking._id,
-      pdfUrl,
-    });
+        if (!booking) {
+          console.error('Booking não encontrado');
+          res.status(404).json({ message: 'Booking not found' });
+          return;
+        }
+
+        const guest = booking.hospedeId as IUser;
+
+        if (!guest.name || !guest.email) {
+          console.error('Dados do hóspede em falta:', guest);
+          return;
+        }
+
+        const hotel = await Hotel.findById(booking.hotelId, {
+          name: 1,
+          address: 1,
+        });
+
+        if (!hotel) {
+          console.error('Hotel não encontrado');
+          res.status(404).json({ message: 'Hotel not found' });
+          return;
+        }
+
+        const pdfUrl = await generateInvoicePdf(
+          {
+            ...booking.toObject?.(),
+            guestName: guest.name,
+            guestEmail: guest.email,
+          },
+          hotel,
+        );
+
+        console.log('PDF gerado com sucesso:', pdfUrl);
+
+        const invoice = await Invoice.create({
+          guestId: guest._id,
+          bookingId: booking._id,
+          pdfUrl,
+        });
+
+        console.log('Fatura criada:', invoice._id);
+      } catch (err) {
+        console.error('Erro dentro do handler do webhook:', err);
+        res.status(500).send('Erro interno');
+        return;
+      }
+    })();
   }
-
-  res.json({ received: true });
 };
 
 export const confirmPayment: RequestHandler = async (req, res) => {
